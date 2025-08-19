@@ -14,3 +14,8 @@ jobs:
           python-version: '3.11'
       - run: pip install -r requirements.txt
       - run: pytest --qase
+      
+env:
+  APP_URL: ${{ secrets.APP_URL }}
+  TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
+  TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
