@@ -20,7 +20,7 @@ jobs:
         run: pip install --no-cache-dir -r requirements.txt
 
       - name: Run tests with Qase
-        run: pytest --qase
+        run: pytest -p qase.pytest --qase
 
     env:
       QASE_API_TOKEN: ${{ secrets.QASE_API_TOKEN }}
