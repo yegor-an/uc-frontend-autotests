@@ -20,13 +20,18 @@ jobs:
         run: pip install --no-cache-dir -r requirements.txt
 
       - name: Run tests with Qase
-        run: pytest -p qase.pytest --qase
+        run: |
+          pytest \
+            --qase-mode=testops \
+            --qase-testops-api-token="$QASE_API_TOKEN" \
+            --qase-testops-project="$QASE_PROJECT_CODE" \
+            --qase-testops-run-title="CI run $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
     env:
-      QASE_API_TOKEN: ${{ secrets.QASE_API_TOKEN }}
-      QASE_PROJECT_CODE: ${{ secrets.QASE_PROJECT_CODE }}
-      QASE_RUN_ID: ${{ github.event.client_payload.run_id }} 
-      BASE_URL: ${{ secrets.BASE_URL }}
-      TEST_EMAIL: ${{ secrets.TEST_EMAIL_1 }}
-      TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
-      TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
+      QASE_API_TOKEN:   ${{ secrets.QASE_API_TOKEN }}
+      QASE_PROJECT_CODE:${{ secrets.QASE_PROJECT_CODE }}
+      QASE_RUN_ID:      ${{ github.event.client_payload.run_id }}
+      BASE_URL:         ${{ secrets.BASE_URL }}
+      TEST_EMAIL:       ${{ secrets.TEST_EMAIL_1 }}
+      TEST_PASSWORD:    ${{ secrets.TEST_PASSWORD }}
+      TEST_USERNAME:    ${{ secrets.TEST_USERNAME }}
