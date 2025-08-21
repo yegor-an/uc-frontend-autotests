@@ -30,3 +30,4 @@ jobs:
             --qase-testops-api-token="$QASE_API_TOKEN" \
             --qase-testops-project="$QASE_PROJECT_CODE" \
             --qase-testops-run-title="CI run"
+            --qase-testops-upload-attachments
