@@ -1,6 +1,6 @@
 import pytest
 from selene import browser
-from qaseio.pytest import qase
+from qase.pytest import qase
 from config import BASE_URL
 
 
@@ -27,4 +27,5 @@ def take_screenshot_on_failure(request):
 def pytest_runtest_makereport(item, call):
     outcome = yield
     rep = outcome.get_result()
+
     setattr(item, "rep_" + rep.when, rep)
