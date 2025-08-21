@@ -1,3 +1,0 @@
---pre selene
-selenium
-pytest
