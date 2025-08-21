@@ -8,17 +8,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - run: pip install -r requirements.txt
-      - run: pytest --qase
-      
-env:
-  QASE_API_TOKEN: ${{ secrets.QASE_API_TOKEN }}
-  QASE_PROJECT_CODE: ${{ secrets.QASE_PROJECT_CODE }}
-  QASE_RUN_ID: ${{ github.event.client_payload.run_id }} 
-  APP_URL: ${{ secrets.BASE_URL }}
-  TEST_EMAIL: ${{ secrets.TEST_EMAIL_1 }} # нет профилей
-  TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
-  TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
+
+      - name: Upgrade pip
+        run: pip install --upgrade pip
+
+      - name: Install dependencies
+        run: pip install --no-cache-dir -r requirements.txt
+
+      - name: Run tests with Qase
+        run: pytest --qase
+
+    env:
+      QASE_API_TOKEN: ${{ secrets.QASE_API_TOKEN }}
+      QASE_PROJECT_CODE: ${{ secrets.QASE_PROJECT_CODE }}
+      QASE_RUN_ID: ${{ github.event.client_payload.run_id }} 
+      APP_URL: ${{ secrets.BASE_URL }}
+      TEST_EMAIL: ${{ secrets.TEST_EMAIL_1 }}
+      TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+      TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
