@@ -24,7 +24,7 @@ jobs:
       - name: Install dependencies
         run: pip install --no-cache-dir -r requirements.txt
       - name: Run tests with Qase
-        run: pytest --qase-mode=testops --qase-testops-api-token="$QASE_API_TOKEN" --qase-testops-project="$QASE_PROJECT_CODE" --qase-testops-run-title="CI run" --qase-testops-upload-attachments
+        run: pytest --qase-mode=testops --qase-testops-api-token="$QASE_API_TOKEN" --qase-testops-project="$QASE_PROJECT_CODE" --qase-testops-run-title="CI run"
       - name: Debug
         if: always()
         run: |
