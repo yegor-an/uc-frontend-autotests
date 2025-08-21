@@ -1,8 +1,7 @@
 name: Qase tests
 
 on:
-  repository_dispatch:     # слушаем внешние вызовы
-    types: [qase-run]      # имя события (должно совпадать с тем, что указано в Qase)
+  workflow_dispatch:
 
 jobs:
   tests:
