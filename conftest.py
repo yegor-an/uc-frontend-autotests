@@ -1,14 +1,12 @@
 import tempfile, shutil
 from pathlib import Path
-
 import pytest
-from selene import browser, Config
+from selene import browser
 from selenium.webdriver.chrome.options import Options
 from qase.pytest import qase
 from config import BASE_URL
 
-
-@pytest.fixture(scope='function', autouse=True)
+@pytest.fixture(autouse=True)
 def setup_browser():
     tmp_profile = tempfile.mkdtemp(prefix="chrome-profile-")
 
@@ -18,22 +16,17 @@ def setup_browser():
     opts.add_argument("--no-sandbox")
     opts.add_argument("--disable-dev-shm-usage")
 
-    browser.config = Config(
-        base_url=BASE_URL,
-        window_width=1920,
-        window_height=1080,
-        driver_options=opts,
-    )
+    # настраиваем поля, не присваиваем весь Config
+    browser.config.base_url = BASE_URL
+    browser.config.window_width = 1920
+    browser.config.window_height = 1080
+    browser.config.driver_options = opts
 
     try:
         yield
     finally:
-        # закрыть драйвер и убрать профиль
-        try:
-            browser.quit()
-        finally:
-            shutil.rmtree(tmp_profile, ignore_errors=True)
-
+        browser.quit()
+        shutil.rmtree(tmp_profile, ignore_errors=True)
 
 @pytest.fixture(autouse=True)
 def take_screenshot_on_failure(request):
@@ -46,9 +39,7 @@ def take_screenshot_on_failure(request):
             browser.driver.save_screenshot(path)
             qase.attach.file(path, "Screenshot on failure")
         except Exception:
-            # не мешаем падать тесту из-за проблем со скриншотом
             pass
-
 
 @pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_makereport(item, call):
