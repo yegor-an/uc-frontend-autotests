@@ -1,4 +1,5 @@
 from selene import browser, be, have, by
+from pages.page_with_sidebar import PageWithSidebar
 
 class LoginPage(PageWithSidebar):
     def open(self):
@@ -15,3 +16,4 @@ class LoginPage(PageWithSidebar):
         browser.element('#password').type(password)
         browser.element('[type="submit"]').click()
         return self
+
