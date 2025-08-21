@@ -1,6 +1,6 @@
 from selene import browser, be, have, by
 
-class LoginPage:
+class LoginPage(PageWithSidebar):
     def open(self):
         browser.open('/login')
         return self
