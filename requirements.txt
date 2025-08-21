@@ -1,5 +1,5 @@
+pytest==7.4.4
 selene==2.0.0rc9
 selenium
-pytest
 qase-pytest>=6.3.8
 python-dotenv
