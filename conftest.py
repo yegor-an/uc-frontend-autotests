@@ -46,3 +46,13 @@ def pytest_runtest_makereport(item, call):
     outcome = yield
     rep = outcome.get_result()
     setattr(item, f"rep_{rep.when}", rep)
+
+    if rep.when == "call" and rep.failed:
+        Path("screenshots").mkdir(parents=True, exist_ok=True)
+        path = f"screenshots/{item.name}.png"
+        try:
+            browser.driver.save_screenshot(path)
+            qase.attach.file(path, "Screenshot on failure")
+        except Exception:
+            pass
+
