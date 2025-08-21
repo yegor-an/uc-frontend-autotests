@@ -29,5 +29,13 @@ jobs:
             --qase-mode=testops \
             --qase-testops-api-token="$QASE_API_TOKEN" \
             --qase-testops-project="$QASE_PROJECT_CODE" \
-            --qase-testops-run-title="CI run"
+            --qase-testops-run-title="CI run" \
             --qase-testops-upload-attachments
+      - name: Upload screenshots
+        if: always()     # выполняется даже если тесты упали
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: |
+            screenshots/
+            .selene/screenshots/
