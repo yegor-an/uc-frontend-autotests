@@ -11,7 +11,7 @@ jobs:
       QASE_PROJECT_CODE: ${{ secrets.QASE_PROJECT_CODE }}
       QASE_RUN_ID: ${{ github.event.client_payload.run_id }}
       BASE_URL: ${{ secrets.BASE_URL }}
-      TEST_EMAIL: ${{ secrets.TEST_EMAIL_1 }}
+      TEST_EMAIL_1: ${{ secrets.TEST_EMAIL_1 }}
       TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
       TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
     steps:
