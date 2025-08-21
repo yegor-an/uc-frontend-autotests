@@ -1,7 +1,7 @@
 name: Qase tests
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: {}
 
 jobs:
   tests:
@@ -16,26 +16,15 @@ jobs:
       TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
       - name: Upgrade pip
         run: pip install --upgrade pip
-
       - name: Install dependencies
         run: pip install --no-cache-dir -r requirements.txt
-
       - name: Run tests with Qase
-        run: >
-          pytest
-          --qase-mode=testops
-          --qase-testops-api-token="$QASE_API_TOKEN"
-          --qase-testops-project="$QASE_PROJECT_CODE"
-          --qase-testops-run-title="CI run"
-          --qase-testops-upload-attachments
-
+        run: pytest --qase-mode=testops --qase-testops-api-token="$QASE_API_TOKEN" --qase-testops-project="$QASE_PROJECT_CODE" --qase-testops-run-title="CI run" --qase-testops-upload-attachments
       - name: Debug: list workspace
         if: always()
         run: |
@@ -43,7 +32,6 @@ jobs:
           echo "=== dirs (2 levels) ==="; find . -maxdepth 2 -type d -print
           echo "=== screenshots ==="; ls -R screenshots || true
           echo "=== .selene ==="; ls -R .selene || true
-
       - name: Upload screenshots
         if: always()
         uses: actions/upload-artifact@v4
