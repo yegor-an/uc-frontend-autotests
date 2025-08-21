@@ -6,6 +6,7 @@ from selenium.webdriver.chrome.options import Options
 from qase.pytest import qase
 from config import BASE_URL
 
+
 @pytest.fixture(autouse=True)
 def setup_browser():
     tmp_profile = tempfile.mkdtemp(prefix="chrome-profile-")
@@ -16,7 +17,6 @@ def setup_browser():
     opts.add_argument("--no-sandbox")
     opts.add_argument("--disable-dev-shm-usage")
 
-    # настраиваем поля, не присваиваем весь Config
     browser.config.base_url = BASE_URL
     browser.config.window_width = 1920
     browser.config.window_height = 1080
@@ -25,34 +25,27 @@ def setup_browser():
     try:
         yield
     finally:
-        browser.quit()
-        shutil.rmtree(tmp_profile, ignore_errors=True)
-
-@pytest.fixture(autouse=True)
-def take_screenshot_on_failure(request):
-    yield
-    rep = getattr(request.node, "rep_call", None)
-    if rep and rep.failed:
         try:
-            Path("screenshots").mkdir(parents=True, exist_ok=True)
-            path = f"screenshots/{request.node.name}.png"
-            browser.driver.save_screenshot(path)
-            qase.attach.file(path, "Screenshot on failure")
-        except Exception:
-            pass
+            browser.quit()
+        finally:
+            shutil.rmtree(tmp_profile, ignore_errors=True)
+
 
 @pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_makereport(item, call):
+    # let pytest run the test and produce a report
     outcome = yield
     rep = outcome.get_result()
     setattr(item, f"rep_{rep.when}", rep)
 
-    if rep.when == "call" and rep.failed:
-        Path("screenshots").mkdir(parents=True, exist_ok=True)
-        path = f"screenshots/{item.name}.png"
+    # only after actual call phase, only if it truly failed (not xfail)
+    if rep.when == "call" and rep.failed and not getattr(rep, "wasxfail", False):
         try:
-            browser.driver.save_screenshot(path)
-            qase.attach.file(path, "Screenshot on failure")
+            if getattr(browser, "driver", None):
+                Path("screenshots").mkdir(parents=True, exist_ok=True)
+                path = Path("screenshots") / f"{item.name}.png"
+                browser.driver.save_screenshot(str(path))
+                qase.attach.file(str(path), "Screenshot on failure")
         except Exception:
+            # keep CI green even if attachment fails
             pass
-
