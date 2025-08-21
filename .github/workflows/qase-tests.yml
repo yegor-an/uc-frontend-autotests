@@ -28,25 +28,21 @@ jobs:
         run: pip install --no-cache-dir -r requirements.txt
 
       - name: Run tests with Qase
-        run: |
-          pytest \
-            --qase-mode=testops \
-            --qase-testops-api-token="$QASE_API_TOKEN" \
-            --qase-testops-project="$QASE_PROJECT_CODE" \
-            --qase-testops-run-title="CI run" \
-            --qase-testops-upload-attachments
+        run: >
+          pytest
+          --qase-mode=testops
+          --qase-testops-api-token="$QASE_API_TOKEN"
+          --qase-testops-project="$QASE_PROJECT_CODE"
+          --qase-testops-run-title="CI run"
+          --qase-testops-upload-attachments
 
       - name: Debug: list workspace
         if: always()
         run: |
-          echo "=== pwd ==="
-          pwd
-          echo "=== tree . (2 levels) ==="
-          find . -maxdepth 2 -type d -print
-          echo "=== screenshots ==="
-          ls -R screenshots || true
-          echo "=== .selene ==="
-          ls -R .selene || true
+          echo "=== pwd ==="; pwd
+          echo "=== dirs (2 levels) ==="; find . -maxdepth 2 -type d -print
+          echo "=== screenshots ==="; ls -R screenshots || true
+          echo "=== .selene ==="; ls -R .selene || true
 
       - name: Upload screenshots
         if: always()
