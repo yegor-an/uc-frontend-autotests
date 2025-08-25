@@ -1,9 +1,10 @@
 from selene import browser, be, have, by
 from pages.page_with_sidebar import PageWithSidebar
+from config import BASE_URL
 
 class LoginPage(PageWithSidebar):
     def open(self):
-        browser.open('/login')
+        browser.open(f'{BASE_URL}/login')
         return self
 
     def login_with_enter(self, email, password):

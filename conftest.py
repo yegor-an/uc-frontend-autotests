@@ -12,10 +12,11 @@ def setup_browser():
     tmp_profile = tempfile.mkdtemp(prefix="chrome-profile-")
 
     opts = Options()
-    opts.add_argument(f"--user-data-dir={tmp_profile}")
-    opts.add_argument("--headless=new")
-    opts.add_argument("--no-sandbox")
-    opts.add_argument("--disable-dev-shm-usage")
+    opts.add_argument("--headless=new")        # запуск без окна
+    opts.add_argument("--disable-gpu")         # убирает ошибки SharedImageManager на Windows
+    opts.add_argument("--log-level=3")         # только ошибки, без инфо/ворнингов
+    opts.add_argument("--disable-logging")     # глушит лишние логи движка
+    opts.add_argument("--silent")              # делает Chrome максимально "тихим"
 
     browser.config.base_url = BASE_URL
     browser.config.window_width = 1920
