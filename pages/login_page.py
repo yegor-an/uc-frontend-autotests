@@ -18,3 +18,14 @@ class LoginPage(PageWithSidebar):
         browser.element('[type="submit"]').click()
         return self
 
+    def email_validation_error(self):
+        browser.element('#email').type('la')
+        browser.element('#email-error').should(be.visible) 
+        browser.element('#email-error').should(have.text('Email not valid'))  
+        browser.element('[type="submit"]').should(be.disabled)
+        
+    def password_validation_error(self):
+        browser.element('#password').type('la')
+        browser.element('#password-error').should(be.visible) 
+        browser.element('#password-error').should(have.text('Min. 8 characters')) 
+        browser.element('[type="submit"]').should(be.disabled)

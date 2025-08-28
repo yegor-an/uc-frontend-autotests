@@ -3,3 +3,5 @@ selene==2.0.0rc9
 selenium
 qase-pytest>=6.3.8
 python-dotenv
+pillow
+allure-pytest
