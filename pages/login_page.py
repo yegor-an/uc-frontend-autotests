@@ -1,9 +1,9 @@
 from selene import browser
-from pages.page_with_sidebar import PageWithSidebar
 from config import BASE_URL
+from pages.page_with_sidebar import PageWithSidebar
 
 
-class LoginPage(PageWithSidebar):
+class LoginPage:
     EMAIL_INPUT = '#email'
     PASSWORD_INPUT = '#password'
     SUBMIT_BUTTON = '[type="submit"]'
@@ -33,11 +33,11 @@ class LoginPage(PageWithSidebar):
 
     def submit_with_enter(self):
         browser.element(self.PASSWORD_INPUT).press_enter()
-        return self
+        return PageWithSidebar()
 
     def submit_with_button(self):
         browser.element(self.SUBMIT_BUTTON).click()
-        return self
+        return PageWithSidebar()
 
     def click_reset_password(self):
         browser.element(self.RESET_PASSWORD_LINK).click()

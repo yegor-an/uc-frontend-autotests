@@ -1,16 +1,15 @@
 from selene import browser
-from pages.page_with_sidebar import PageWithSidebar
 from config import BASE_URL
 
 
-class LoginPage(PageWithSidebar):
+class SignupPage:
     EMAIL_INPUT = '#email'
     PASSWORD_INPUT = '#password'
     SUBMIT_BUTTON = '[type="submit"]'
     RESET_PASSWORD_LINK = '#reset-password-link'
     LOG_IN_LINK = '#log-in-link'
-    PRIVACY_POLICY_LINK = '#privacy-policy-link'
-    TERMS_OF_SERVICE_LINK = '#terms-of-service-link'
+    POLICY_LINK = '#privacy-policy-link'
+    TERMS_LINK = '#terms-of-service-link'
     
     def open(self):
         browser.open(f'{BASE_URL}/register')
@@ -56,10 +55,10 @@ class LoginPage(PageWithSidebar):
         browser.element('button[aria-label="Hide password"] svg').click()
         return self
 
-    def click_privacy_policy(self):
-        browser.element(self.PRIVACY_POLICY_LINK).click()
+    def click_policy(self):
+        browser.element(self.POLICY_LINK).click()
         return self
         
-    def click_terms_of_service(self):
-        browser.element(self.TERMS_OF_SERVICE_LINK).click()
+    def click_terms(self):
+        browser.element(self.TERMS_LINK).click()
         return self

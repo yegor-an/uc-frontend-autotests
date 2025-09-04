@@ -4,6 +4,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selene import browser, be, have
 from config import EMAIL, PASSWORD, USERNAME, BASE_URL
 from pages.login_page import LoginPage
+from pages.page_with_sidebar import PageWithSidebar
 from test_data.signin_signup import (
     INVALID_EMAIL_ONLY_LETTERS,
     INVALID_EMAIL_NO_AT,
@@ -26,7 +27,6 @@ from test_data.signin_signup import (
 
 
 @pytest.mark.login1
-@pytest.mark.qase(id=1)
 def test_log_in_with_enter():
     (LoginPage()
         .open()
@@ -38,7 +38,6 @@ def test_log_in_with_enter():
 
 
 @pytest.mark.login2
-@pytest.mark.qase(id=2)
 def test_log_in_with_button():
     (LoginPage()
         .open()
@@ -55,7 +54,6 @@ def test_log_in_with_button():
 
 
 @pytest.mark.login3
-@pytest.mark.qase(id=3)
 @pytest.mark.parametrize(
     "invalid_email",
     [INVALID_EMAIL_ONLY_LETTERS, INVALID_EMAIL_NO_AT, INVALID_EMAIL_NO_DOT],
@@ -68,7 +66,6 @@ def test_invalid_email_shows_error(invalid_email):
 
 
 @pytest.mark.login4
-@pytest.mark.qase(id=4)
 def test_hide_validation_error_for_email():
     page = LoginPage().open()
     page.fill_email(INVALID_EMAIL_ONLY_LETTERS)
@@ -83,7 +80,6 @@ def test_hide_validation_error_for_email():
 
 
 @pytest.mark.login5
-@pytest.mark.qase(id=5)
 def test_invalid_password_shows_error(invalid_password, expected_error):
     page = LoginPage().open()
     page.fill_password(invalid_password)
@@ -92,7 +88,6 @@ def test_invalid_password_shows_error(invalid_password, expected_error):
 
 
 @pytest.mark.login6
-@pytest.mark.qase(id=6)
 def test_hide_validation_error_for_password():
     page = LoginPage().open()
     page.fill_password(INVALID_PASSWORD_SHORT)
@@ -107,14 +102,12 @@ def test_hide_validation_error_for_password():
 
 
 @pytest.mark.login7
-@pytest.mark.qase(id=7)
 def test_submit_disabled_when_page_open():
     page = LoginPage().open()
     browser.element(LoginPage.SUBMIT_BUTTON).should(be.disabled)
 
 
 @pytest.mark.login8
-@pytest.mark.qase(id=8)
 def test_submit_disabled_with_empty_email():
     page = LoginPage().open()
     page.fill_password(PASSWORD)
@@ -122,7 +115,6 @@ def test_submit_disabled_with_empty_email():
 
 
 @pytest.mark.login9
-@pytest.mark.qase(id=9)
 def test_submit_disabled_with_empty_password():
     page = LoginPage().open()
     page.fill_email(EMAIL)
@@ -135,7 +127,6 @@ def test_submit_disabled_with_empty_password():
 
 
 @pytest.mark.login10
-@pytest.mark.qase(id=10)
 def test_error_for_unexisting_email():
     page = LoginPage().open()
     page.fill_email(UNEXISTING_EMAIL).fill_password(VALID_PASSWORD).submit_with_enter()
@@ -143,7 +134,6 @@ def test_error_for_unexisting_email():
 
 
 @pytest.mark.login11
-@pytest.mark.qase(id=11)
 def test_error_for_unmatching_password():
     page = LoginPage().open()
     page.fill_email(EMAIL).fill_password(UNMATCHING_PASSWORD).submit_with_enter()
@@ -156,7 +146,6 @@ def test_error_for_unmatching_password():
 
 
 @pytest.mark.login12
-@pytest.mark.qase(id=12)
 def test_password_hidden_when_page_open():
     page = LoginPage().open()
     page.click_hide_password()
@@ -164,7 +153,6 @@ def test_password_hidden_when_page_open():
     
 
 @pytest.mark.login13
-@pytest.mark.qase(id=13)
 def test_hide_show_password():
     page = LoginPage().open()
     page.click_password_field()
@@ -180,7 +168,6 @@ def test_hide_show_password():
 
 
 @pytest.mark.login14
-@pytest.mark.qase(id=14)
 def test_open_reset_password_page():
     page = LoginPage().open()
     page.click_reset_password()
@@ -190,7 +177,6 @@ def test_open_reset_password_page():
 
 
 @pytest.mark.login15
-@pytest.mark.qase(id=15)
 def test_open_sign_up_page():
     page = LoginPage().open()
     page.click_sign_up()
@@ -205,14 +191,12 @@ def test_open_sign_up_page():
 
 
 @pytest.mark.login16
-@pytest.mark.qase(id=16)
 def test_show_checked_remember_me():
     LoginPage().open()
     browser.element(LoginPage.REMEMBER_ME).should(have.attribute("data-checked", "true"))
 
 
 @pytest.mark.login17
-@pytest.mark.qase(id=17)
 def test_uncheck_remember_me():
     page = LoginPage().open()
     page.toggle_remember_me()
