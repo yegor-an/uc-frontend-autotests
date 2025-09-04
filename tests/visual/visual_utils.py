@@ -1,9 +1,9 @@
 import os
 from PIL import Image, ImageChops
 
-BASELINE_DIR = "visual_baselines"
-RESULTS_DIR = "visual_results"
-DIFFS_DIR = "visual_diffs"
+BASELINE_DIR = "./tests/visual/visual_baselines"
+RESULTS_DIR = "./tests/visual/visual_results"
+DIFFS_DIR = "./tests/visual/visual_diffs"
 
 os.makedirs(BASELINE_DIR, exist_ok=True)
 os.makedirs(RESULTS_DIR, exist_ok=True)
