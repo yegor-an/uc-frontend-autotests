@@ -5,20 +5,7 @@ from selene import browser, be, have
 from config import EMAIL, PASSWORD, USERNAME, BASE_URL
 from pages.login_page import LoginPage
 from pages.page_with_sidebar import PageWithSidebar
-from test_data.signin_signup import (
-    INVALID_EMAIL_ONLY_LETTERS,
-    INVALID_EMAIL_NO_AT,
-    INVALID_EMAIL_NO_DOT,
-    VALID_EMAIL,
-    INVALID_PASSWORD_SHORT,
-    INVALID_PASSWORD_LONG,
-    VALID_PASSWORD,
-    UNEXISTING_EMAIL,
-    UNMATCHING_PASSWORD,
-    ERROR_EMAIL_INVALID,
-    ERROR_PASSWORD_MIN,
-    ERROR_PASSWORD_MAX,
-)
+from test_data.signin_signup import *
 
 
 # -----------------------
@@ -56,7 +43,14 @@ def test_log_in_with_button():
 @pytest.mark.login3
 @pytest.mark.parametrize(
     "invalid_email",
-    [INVALID_EMAIL_ONLY_LETTERS, INVALID_EMAIL_NO_AT, INVALID_EMAIL_NO_DOT],
+    [
+        INVALID_EMAIL_ONLY_LETTERS,
+        INVALID_EMAIL_NO_AT,
+        INVALID_EMAIL_NO_DOT,
+        INVALID_EMAIL_WITH_SPACES,
+        INVALID_EMAIL_DOUBLE_AT,
+        INVALID_EMAIL_DOUBLE_DOT,
+    ],
 )
 def test_invalid_email_shows_error(invalid_email):
     page = LoginPage().open()

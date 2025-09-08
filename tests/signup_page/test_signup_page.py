@@ -4,21 +4,9 @@ from selenium.webdriver.support import expected_conditions as EC
 from selene import browser, be, have
 from config import EMAIL, PASSWORD, USERNAME, BASE_URL
 from pages.signup_page import SignupPage
-from test_data.signin_signup import (
-    INVALID_EMAIL_ONLY_LETTERS,
-    INVALID_EMAIL_NO_AT,
-    INVALID_EMAIL_NO_DOT,
-    VALID_EMAIL,
-    INVALID_PASSWORD_SHORT,
-    INVALID_PASSWORD_LONG,
-    VALID_PASSWORD,
-    UNEXISTING_EMAIL,
-    UNMATCHING_PASSWORD,
-    ERROR_EMAIL_INVALID,
-    ERROR_PASSWORD_MIN,
-    ERROR_PASSWORD_MAX,
-)
-
+from pages.page_with_sidebar import PageWithSidebar
+from test_data.signin_signup import *
+from tests.utils import generate_email
 
 # -----------------------
 # Successful signup
@@ -29,9 +17,10 @@ from test_data.signin_signup import (
 def test_sign_up_with_enter():
     (SignupPage()
         .open()
-        .fill_email(EMAIL)
+        .fill_email(generate_email())
         .fill_password(PASSWORD)
-        .submit_with_enter()
+        .submit_with_enter())
+    (PageWithSidebar()
         .should_be_loaded()
         .sidebar.should_show_username(USERNAME))
 
@@ -40,9 +29,10 @@ def test_sign_up_with_enter():
 def test_sign_up_with_button():
     (SignupPage()
         .open()
-        .fill_email(EMAIL)
+        .fill_email(generate_email())
         .fill_password(PASSWORD)
-        .submit_with_button()
+        .submit_with_button())
+    (PageWithSidebar()
         .should_be_loaded()
         .sidebar.should_show_username(USERNAME))
 
@@ -55,7 +45,14 @@ def test_sign_up_with_button():
 @pytest.mark.signup3
 @pytest.mark.parametrize(
     "invalid_email",
-    [INVALID_EMAIL_ONLY_LETTERS, INVALID_EMAIL_NO_AT, INVALID_EMAIL_NO_DOT],
+    [
+        INVALID_EMAIL_ONLY_LETTERS,
+        INVALID_EMAIL_NO_AT,
+        INVALID_EMAIL_NO_DOT,
+        INVALID_EMAIL_WITH_SPACES,
+        INVALID_EMAIL_DOUBLE_AT,
+        INVALID_EMAIL_DOUBLE_DOT,
+    ],
 )
 def test_invalid_email_shows_error(invalid_email):
     page = SignupPage().open()
@@ -131,16 +128,10 @@ def test_submit_disabled_with_empty_password():
 
 
 @pytest.mark.signup9
-def test_error_for_unexisting_email():
+def test_error_for_taken_email():
     page = SignupPage().open()
-    page.fill_email(UNEXISTING_EMAIL).fill_password(VALID_PASSWORD).submit_with_enter()
-    browser.element('#error-message #top-reset-password-link').should(be.visible)
-
-@pytest.mark.signup10
-def test_error_for_unmatching_password():
-    page = SignupPage().open()
-    page.fill_email(EMAIL).fill_password(UNMATCHING_PASSWORD).submit_with_enter()
-    browser.element('#error-message #top-reset-password-link').should(be.visible)
+    page.fill_email(EMAIL).fill_password(VALID_PASSWORD).submit_with_enter()
+    browser.element(SignupPage.PASSWORD_ERROR).should(be.visible)
 
 
 # -----------------------
@@ -191,19 +182,3 @@ def test_open_terms_page():
     )
 
 
-# -----------------------
-# Remember me
-# -----------------------
-
-
-@pytest.mark.signup15
-def test_show_checked_remember_me():
-    SignupPage().open()
-    browser.element(SignupPage.REMEMBER_ME).should(have.attribute("data-checked", "true"))
-
-
-@pytest.mark.signup16
-def test_uncheck_remember_me():
-    page = SignupPage().open()
-    page.toggle_remember_me()
-    browser.element(SignupPage.REMEMBER_ME).should(have.attribute("data-checked", "false"))

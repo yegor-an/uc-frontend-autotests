@@ -3,7 +3,6 @@ from pathlib import Path
 import pytest
 from selene import browser
 from selenium.webdriver.chrome.options import Options
-from qase.pytest import qase
 from config import BASE_URL
 
 
@@ -46,7 +45,6 @@ def pytest_runtest_makereport(item, call):
                 Path("screenshots").mkdir(parents=True, exist_ok=True)
                 path = Path("screenshots") / f"{item.name}.png"
                 browser.driver.save_screenshot(str(path))
-                qase.attach.file(str(path), "Screenshot on failure")
         except Exception:
             # keep CI green even if attachment fails
             pass
