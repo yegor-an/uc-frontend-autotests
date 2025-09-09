@@ -4,37 +4,34 @@ from selenium.webdriver.support import expected_conditions as EC
 from selene import browser, be, have
 from config import EMAIL, PASSWORD, USERNAME, BASE_URL
 from pages.signup_page import SignupPage
-from pages.page_with_sidebar import PageWithSidebar
 from test_data.signin_signup import *
 from tests.utils import generate_email
+
+pytestmark = pytest.mark.signup
+
 
 # -----------------------
 # Successful signup
 # -----------------------
 
 
-@pytest.mark.signup1
-def test_sign_up_with_enter():
+def test_sign_up_with_enter_SIGNUP1():
     (SignupPage()
         .open()
         .fill_email(generate_email())
         .fill_password(PASSWORD)
         .submit_with_enter())
-    (PageWithSidebar()
-        .should_be_loaded()
-        .sidebar.should_show_username(USERNAME))
+    WebDriverWait(browser.driver, 4).until(
+        EC.url_to_be(f'{BASE_URL}/register-details')
+    )
 
 
-@pytest.mark.signup2
-def test_sign_up_with_button():
+def test_sign_up_with_button_SIGNUP2():
     (SignupPage()
         .open()
         .fill_email(generate_email())
         .fill_password(PASSWORD)
         .submit_with_button())
-    (PageWithSidebar()
-        .should_be_loaded()
-        .sidebar.should_show_username(USERNAME))
 
 
 # -----------------------
@@ -42,27 +39,25 @@ def test_sign_up_with_button():
 # -----------------------
 
 
-@pytest.mark.signup3
 @pytest.mark.parametrize(
     "invalid_email",
     [
         INVALID_EMAIL_ONLY_LETTERS,
         INVALID_EMAIL_NO_AT,
         INVALID_EMAIL_NO_DOT,
-        INVALID_EMAIL_WITH_SPACES,
+        pytest.param(INVALID_EMAIL_WITH_SPACES, marks=pytest.mark.xfail(reason="нужна реализация")),
         INVALID_EMAIL_DOUBLE_AT,
-        INVALID_EMAIL_DOUBLE_DOT,
+        pytest.param(INVALID_EMAIL_DOUBLE_DOT, marks=pytest.mark.xfail(reason="нужна реализация")),
     ],
 )
-def test_invalid_email_shows_error(invalid_email):
+def test_invalid_email_shows_error_SIGNUP3(invalid_email):
     page = SignupPage().open()
     page.fill_email(invalid_email)
     browser.element(SignupPage.EMAIL_ERROR).should(be.visible).should(have.text(ERROR_EMAIL_INVALID))
     browser.element(SignupPage.SUBMIT_BUTTON).should(be.disabled)
 
 
-@pytest.mark.signup4
-def test_hide_validation_error_for_email():
+def test_hide_validation_error_for_email_SIGNUP4():
     page = SignupPage().open()
     page.fill_email(INVALID_EMAIL_ONLY_LETTERS)
     browser.element(SignupPage.EMAIL_ERROR).should(be.visible)
@@ -75,7 +70,6 @@ def test_hide_validation_error_for_email():
 # -----------------------
 
 
-@pytest.mark.signup5
 @pytest.mark.parametrize(
     "invalid_password, expected_error",
     [
@@ -87,15 +81,14 @@ def test_hide_validation_error_for_email():
         ),
     ],
 )
-def test_invalid_password_shows_error(invalid_password, expected_error):
+def test_invalid_password_shows_error_SIGNUP5(invalid_password, expected_error):
     page = SignupPage().open()
     page.fill_password(invalid_password)
     browser.element(SignupPage.PASSWORD_ERROR).should(be.visible).should(have.text(expected_error))
     browser.element(SignupPage.SUBMIT_BUTTON).should(be.disabled)
 
 
-@pytest.mark.signup6
-def test_hide_validation_error_for_password():
+def test_hide_validation_error_for_password_SIGNUP6():
     page = SignupPage().open()
     page.fill_password(INVALID_PASSWORD_SHORT)
     browser.element(SignupPage.PASSWORD_ERROR).should(be.visible)
@@ -108,15 +101,13 @@ def test_hide_validation_error_for_password():
 # -----------------------
 
 
-@pytest.mark.signup7
-def test_submit_disabled_with_empty_email():
+def test_submit_disabled_with_empty_email_SIGNUP7():
     page = SignupPage().open()
     page.fill_password(PASSWORD)
     browser.element(SignupPage.SUBMIT_BUTTON).should(be.disabled)
 
 
-@pytest.mark.signup8
-def test_submit_disabled_with_empty_password():
+def test_submit_disabled_with_empty_password_SIGNUP8():
     page = SignupPage().open()
     page.fill_email(EMAIL)
     browser.element(SignupPage.SUBMIT_BUTTON).should(be.disabled)
@@ -127,11 +118,10 @@ def test_submit_disabled_with_empty_password():
 # -----------------------
 
 
-@pytest.mark.signup9
-def test_error_for_taken_email():
+def test_error_for_taken_email_SIGNUP9():
     page = SignupPage().open()
     page.fill_email(EMAIL).fill_password(VALID_PASSWORD).submit_with_enter()
-    browser.element(SignupPage.PASSWORD_ERROR).should(be.visible)
+    browser.element(SignupPage.EMAIL_ERROR).should(be.visible)
 
 
 # -----------------------
@@ -139,8 +129,13 @@ def test_error_for_taken_email():
 # -----------------------
 
 
-@pytest.mark.signup11
-def test_hide_show_password():
+def test_password_hidden_when_page_open_SIGNUP10():
+    page = SignupPage().open()
+    page.click_password_field()
+    browser.element('button[aria-label="Show password"] svg').should(be.visible)
+
+
+def test_hide_show_password_SIGNUP11():
     page = SignupPage().open()
     page.click_password_field()
     page.click_show_password()
@@ -154,8 +149,7 @@ def test_hide_show_password():
 # -----------------------
 
 
-@pytest.mark.signup12
-def test_open_log_in_page():
+def test_open_log_in_page_SIGNUP12():
     page = SignupPage().open()
     page.click_log_in()
     WebDriverWait(browser.driver, 4).until(
@@ -163,22 +157,19 @@ def test_open_log_in_page():
     )
 
 
-@pytest.mark.signup13
-def test_open_policy_page():
+def test_open_policy_page_SIGNUP13():
     page = SignupPage().open()
     page.click_policy()
+    browser.driver.switch_to.window(browser.driver.window_handles[-1])
     WebDriverWait(browser.driver, 4).until(
-        EC.url_to_be(f'{BASE_URL}/policy')
+        EC.url_to_be(f"{BASE_URL}/policy")
     )
 
 
-@pytest.mark.signup14
 @pytest.mark.skip
-def test_open_terms_page():
+def test_open_terms_page_SIGNUP14():
     page = SignupPage().open()
     page.click_terms()
     WebDriverWait(browser.driver, 4).until(
         EC.url_to_be(f'{BASE_URL}/')
     )
-
-

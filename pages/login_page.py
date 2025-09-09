@@ -10,6 +10,8 @@ class LoginPage:
     RESET_PASSWORD_LINK = '#reset-password-link'
     SIGN_UP_LINK = '#sign-up-link'
     REMEMBER_ME = '[data-checked]'
+    EMAIL_ERROR = '#email-error'
+    PASSWORD_ERROR = '#password-error'
 
     def open(self):
         browser.open(f'{BASE_URL}/login')

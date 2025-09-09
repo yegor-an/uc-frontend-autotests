@@ -10,6 +10,8 @@ class SignupPage:
     LOG_IN_LINK = '#log-in-link'
     POLICY_LINK = '#privacy-policy-link'
     TERMS_LINK = '#terms-of-service-link'
+    EMAIL_ERROR = '#email-error'
+    PASSWORD_ERROR = '#password-error'
     
     def open(self):
         browser.open(f'{BASE_URL}/register')
@@ -39,7 +41,7 @@ class SignupPage:
         browser.element(self.SUBMIT_BUTTON).click()
         return self
 
-    def click_login(self):
+    def click_log_in(self):
         browser.element(self.LOG_IN_LINK).click()
         return self
 
