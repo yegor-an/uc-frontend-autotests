@@ -4,7 +4,6 @@ from bot_config import TELEGRAM_TOKEN
 from handlers import router
 from watcher import ReportsWatcher
 
-
 async def main():
     bot = Bot(token=TELEGRAM_TOKEN)
     dp = Dispatcher()
@@ -16,7 +15,6 @@ async def main():
         dp.start_polling(bot),
         watcher.run()
     )
-
 
 if __name__ == "__main__":
     asyncio.run(main())
