@@ -1,8 +1,8 @@
 import asyncio
 from aiogram import Bot, Dispatcher
-from .bot_config import TELEGRAM_TOKEN
-from .handlers import router
-from .watcher import ReportsWatcher
+from bot_config import TELEGRAM_TOKEN
+from handlers import router
+from watcher import ReportsWatcher
 
 
 async def main():

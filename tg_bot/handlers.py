@@ -1,5 +1,5 @@
 from aiogram import Router, types
-from .config import ALLOWED_USERS
+from bot_config import ALLOWED_USERS
 
 router = Router()
 

@@ -2,7 +2,7 @@ import asyncio
 import json
 from pathlib import Path
 from aiogram import Bot
-from .config import REPORTS_PATH, ALLOWED_USERS
+from bot_config import REPORTS_PATH, ALLOWED_USERS
 
 
 class ReportsWatcher:
