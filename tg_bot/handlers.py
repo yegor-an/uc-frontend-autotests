@@ -1,10 +1,10 @@
 from aiogram import Router, types
+from aiogram.filters import Command
 from bot_config import ALLOWED_USERS
 
 router = Router()
 
-
-@router.message(commands=["start"])
+@router.message(Command("start"))
 async def cmd_start(message: types.Message):
     if message.from_user.id not in ALLOWED_USERS:
         return
@@ -13,8 +13,7 @@ async def cmd_start(message: types.Message):
         "Будет присылать ссылки сюда."
     )
 
-
-@router.message(commands=["help"])
+@router.message(Command("help"))
 async def cmd_help(message: types.Message):
     if message.from_user.id not in ALLOWED_USERS:
         return
