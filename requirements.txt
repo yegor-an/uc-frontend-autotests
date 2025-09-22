@@ -3,3 +3,4 @@ selene==2.0.0rc9
 selenium
 python-dotenv
 pillow
+pytest-html
