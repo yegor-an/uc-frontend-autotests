@@ -2,6 +2,7 @@ import asyncio
 import json
 from pathlib import Path
 from aiogram import Bot
+from aiogram.types import FSInputFile
 from bot_config import REPORTS_PATH, ALLOWED_USERS
 
 
@@ -63,7 +64,8 @@ class ReportsWatcher:
                 caption = f"{testset} {date}"
                 for user_id in ALLOWED_USERS:
                     try:
-                        await self.bot.send_document(user_id, file.open("rb"), caption=caption)
+                        doc = FSInputFile(file)  # <=== оборачиваем путь в FSInputFile
+                        await self.bot.send_document(user_id, doc, caption=caption)
                         print(f"[Watcher] Отправлен {file} пользователю {user_id}")
                     except Exception as e:
                         print(f"[Watcher] Ошибка отправки {file} пользователю {user_id}: {e}")
