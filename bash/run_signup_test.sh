@@ -4,7 +4,7 @@
 TEST_FOLDER="../tests/signup_page"
 
 # корневая папка для отчетов
-REPORT_ROOT="../reports"
+REPORT_ROOT="../reports/signup"
 
 # получаем текущую дату в формате ГГГГ-ММ-ДД
 DATE_STR=$(date +%F)
