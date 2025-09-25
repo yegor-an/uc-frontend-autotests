@@ -4,6 +4,15 @@ from bot_config import ALLOWED_USERS
 
 router = Router()
 
+SENT_FILE = Path(__file__).parent / "data" / "sent.json"
+
+def load_sent() -> dict[str, dict]:
+    """Загружает sent.json {путь: {id,testset,date}}."""
+    if SENT_FILE.exists():
+        with open(SENT_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    return {}
+
 @router.message(Command("start"))
 async def cmd_start(message: types.Message):
     return
