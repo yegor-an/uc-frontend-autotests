@@ -4,7 +4,6 @@ import random
 import string
 from pathlib import Path
 from aiogram import Bot
-from aiogram.types import FSInputFile
 from bot_config import REPORTS_PATH, ALLOWED_USERS
 from bs4 import BeautifulSoup  # pip install beautifulsoup4
 
@@ -45,7 +44,7 @@ class ReportsWatcher:
 
     def scan_reports(self) -> list[tuple[str, str, Path, str]]:
         new_files = []
-        print(f"[Watcher] Сканирую папку {REPORTS_PATH}...")
+        #print(f"[Watcher] Сканирую папку {REPORTS_PATH}...")
         for testset_dir in REPORTS_PATH.iterdir():
             if not testset_dir.is_dir():
                 continue
@@ -69,28 +68,22 @@ class ReportsWatcher:
 
     @staticmethod
     def parse_report(file: Path) -> dict[str, int]:
-        """Парсит HTML и вытаскивает числа из блока filters."""
+        """Парсит HTML и вытаскивает числа из блока .filters по классам span."""
         try:
             soup = BeautifulSoup(file.read_text(encoding="utf-8"), "html.parser")
-            filters = soup.select("div.filters span")
+            spans = soup.select("div.filters span")
             stats = {}
-            for span in filters:
-                text = span.get_text(strip=True)
-                parts = text.split()
-                if len(parts) >= 2:
-                    if parts[0] == "Expected":
-                        label = "Expected failures"
-                        number = parts[-1]
-                    elif parts[0] == "Unexpected":
-                        label = "Unexpected passes"
-                        number = parts[-1]
-                    else:
-                        label = parts[0]
-                        number = parts[-1]
-                    try:
-                        stats[label] = int(number)
-                    except ValueError:
-                        stats[label] = 0
+            for span in spans:
+                classes = span.get("class", [])
+                if not classes:
+                    continue
+                cls = classes[0]  # например 'failed', 'passed', 'skipped'
+                text = span.get_text(strip=True)  # '0 Failed,' или '16 Passed,'
+                num = text.split()[0]  # '0' или '16'
+                try:
+                    stats[cls] = int(num)
+                except ValueError:
+                    stats[cls] = 0
             return stats
         except Exception as e:
             print(f"[Watcher] Ошибка парсинга {file}: {e}")
@@ -98,16 +91,16 @@ class ReportsWatcher:
 
     @staticmethod
     def format_summary(stats: dict[str, int], report_id: str) -> str:
-        """Формирует текстовую сводку."""
-        passed = stats.get("Passed", 0)
-        failed = stats.get("Failed", 0)
-        errors = stats.get("Errors", 0)
-        skipped = stats.get("Skipped", 0)
-        expected_failures = stats.get("Expected failures", 0)
-        unexpected_passes = stats.get("Unexpected passes", 0)
-        reruns = stats.get("Reruns", 0)
+        """Формирует текстовую сводку по заданному порядку."""
+        passed = stats.get("passed", 0)
+        failed = stats.get("failed", 0)
+        errors = stats.get("error", 0)
+        skipped = stats.get("skipped", 0)
+        expected_failures = stats.get("xfailed", 0)
+        unexpected_passes = stats.get("xpassed", 0)
+        reruns = stats.get("rerun", 0)
 
-        summary = (
+        return (
             f"✅ Passed: {passed}\n"
             f"❌ Failed: {failed}\n"
             f"❌ Errors: {errors}\n"
@@ -117,7 +110,6 @@ class ReportsWatcher:
             f"🔁 Reruns: {reruns}\n\n"
             f"<code>{report_id}</code>"
         )
-        return summary
 
     async def run(self):
         print("[Watcher] Цикл запущен, ожидаем новые отчёты.")
@@ -126,10 +118,11 @@ class ReportsWatcher:
             for testset, date, file, report_id in new_reports:
                 stats = self.parse_report(file)
                 summary = self.format_summary(stats, report_id)
+                # сообщение: testset + date + сводка
+                text_message = f"{testset} {date}\n\n{summary}"
                 for user_id in ALLOWED_USERS:
                     try:
-                        # Отправляем текстовую сводку
-                        await self.bot.send_message(user_id, f"{testset} {date}\n\n{summary}", parse_mode="HTML")
+                        await self.bot.send_message(user_id, text_message, parse_mode="HTML")
                         print(f"[Watcher] Сводка отчёта {file} ({testset} {date}) отправлена пользователю {user_id}")
                     except Exception as e:
                         print(f"[Watcher] Ошибка отправки сводки {file} пользователю {user_id}: {e}")
