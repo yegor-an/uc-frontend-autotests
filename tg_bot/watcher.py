@@ -4,8 +4,9 @@ import random
 import string
 from pathlib import Path
 from aiogram import Bot
-from bs4 import BeautifulSoup  # pip install beautifulsoup4
+from aiogram.types import FSInputFile
 from bot_config import REPORTS_PATH, ALLOWED_USERS
+from bs4 import BeautifulSoup  # pip install beautifulsoup4
 
 
 class ReportsWatcher:
@@ -15,18 +16,16 @@ class ReportsWatcher:
         self.data_dir = Path(__file__).parent / "data"
         self.data_dir.mkdir(exist_ok=True)
         self.sent_file = self.data_dir / "sent.json"
-        self.sent: dict[str, str] = self._load_sent()  # {path: id}
+        self.sent: dict[str, dict] = self._load_sent()
         print(f"[Watcher] Запущен. Файл sent.json: {self.sent_file}")
 
-    def _load_sent(self) -> dict[str, str]:
+    def _load_sent(self) -> dict[str, dict]:
         if self.sent_file.exists():
             try:
                 with open(self.sent_file, "r", encoding="utf-8") as f:
                     loaded = json.load(f)
                     if isinstance(loaded, dict):
                         return loaded
-                    # поддержка старого формата (список путей)
-                    return {path: self._generate_id() for path in loaded}
             except Exception as e:
                 print(f"[Watcher] Ошибка чтения sent.json: {e}")
         print("[Watcher] sent.json не найден, начинаем с пустого списка.")
@@ -57,7 +56,11 @@ class ReportsWatcher:
                     key = str(file.resolve())
                     if key not in self.sent:
                         report_id = self._generate_id()
-                        self.sent[key] = report_id
+                        self.sent[key] = {
+                            "id": report_id,
+                            "testset": testset_dir.name,
+                            "date": date_dir.name,
+                        }
                         new_files.append((testset_dir.name, date_dir.name, file, report_id))
                         print(f"[Watcher] Найден новый отчёт: {file}")
         if new_files:
@@ -70,22 +73,19 @@ class ReportsWatcher:
         try:
             soup = BeautifulSoup(file.read_text(encoding="utf-8"), "html.parser")
             filters = soup.select("div.filters span")
-            # словарь вида {"Passed": 16, "Failed": 0, ...}
             stats = {}
             for span in filters:
                 text = span.get_text(strip=True)
-                # pytest обычно пишет так: "Passed 16"
                 parts = text.split()
-                if len(parts) >= 2 and parts[0].isalpha():
-                    label = parts[0]
-                    # иногда может быть Expected, Unexpected и т.д.
-                    if label == "Expected":
+                if len(parts) >= 2:
+                    if parts[0] == "Expected":
                         label = "Expected failures"
                         number = parts[-1]
-                    elif label == "Unexpected":
+                    elif parts[0] == "Unexpected":
                         label = "Unexpected passes"
                         number = parts[-1]
                     else:
+                        label = parts[0]
                         number = parts[-1]
                     try:
                         stats[label] = int(number)
@@ -97,9 +97,8 @@ class ReportsWatcher:
             return {}
 
     @staticmethod
-    def format_message(stats: dict[str, int], report_id: str) -> str:
-        """Формирует сообщение по заданному порядку."""
-        # Достаём значения или 0 если нет
+    def format_summary(stats: dict[str, int], report_id: str) -> str:
+        """Формирует текстовую сводку."""
         passed = stats.get("Passed", 0)
         failed = stats.get("Failed", 0)
         errors = stats.get("Errors", 0)
@@ -108,7 +107,7 @@ class ReportsWatcher:
         unexpected_passes = stats.get("Unexpected passes", 0)
         reruns = stats.get("Reruns", 0)
 
-        message = (
+        summary = (
             f"✅ Passed: {passed}\n"
             f"❌ Failed: {failed}\n"
             f"❌ Errors: {errors}\n"
@@ -118,7 +117,7 @@ class ReportsWatcher:
             f"🔁 Reruns: {reruns}\n\n"
             f"<code>{report_id}</code>"
         )
-        return message
+        return summary
 
     async def run(self):
         print("[Watcher] Цикл запущен, ожидаем новые отчёты.")
@@ -126,11 +125,12 @@ class ReportsWatcher:
             new_reports = self.scan_reports()
             for testset, date, file, report_id in new_reports:
                 stats = self.parse_report(file)
-                message = self.format_message(stats, report_id)
+                summary = self.format_summary(stats, report_id)
                 for user_id in ALLOWED_USERS:
                     try:
-                        await self.bot.send_message(user_id, message, parse_mode="HTML")
-                        print(f"[Watcher] Сводка отчёта {file} отправлена пользователю {user_id}")
+                        # Отправляем текстовую сводку
+                        await self.bot.send_message(user_id, f"{testset} {date}\n\n{summary}", parse_mode="HTML")
+                        print(f"[Watcher] Сводка отчёта {file} ({testset} {date}) отправлена пользователю {user_id}")
                     except Exception as e:
                         print(f"[Watcher] Ошибка отправки сводки {file} пользователю {user_id}: {e}")
             await asyncio.sleep(self.interval)
