@@ -6,6 +6,7 @@ router = Router()
 
 @router.message(Command("start"))
 async def cmd_start(message: types.Message):
+    return
     if message.from_user.id not in ALLOWED_USERS:
         return
     await message.answer(
@@ -15,6 +16,7 @@ async def cmd_start(message: types.Message):
 
 @router.message(Command("help"))
 async def cmd_help(message: types.Message):
+    return
     if message.from_user.id not in ALLOWED_USERS:
         return
     await message.answer("/start — запустить\n/help — подсказка")

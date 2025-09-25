@@ -6,7 +6,8 @@ import time
 # === НАСТРОЙКИ ===
 # Каждая строка: (ВРЕМЯ_В_ФОРМАТЕ_HH:MM, "имя_скрипта.sh")
 TASKS = [
-    ("16:10", "run_login_test.sh")
+    ("04:30", "run_login_test.sh"),
+    ("04:35", "run_signup_test.sh")
 ]
 
 # === ЛОГИКА ===

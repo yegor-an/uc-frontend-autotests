@@ -39,7 +39,7 @@ class ReportsWatcher:
 
     def scan_reports(self) -> list[tuple[str, str, Path]]:
         new_files = []
-        print(f"[Watcher] Сканирую папку {REPORTS_PATH}...")
+        #print(f"[Watcher] Сканирую папку {REPORTS_PATH}...")
         for testset_dir in REPORTS_PATH.iterdir():
             if not testset_dir.is_dir():
                 continue
