@@ -14,7 +14,7 @@ pytestmark = pytest.mark.login
 # -----------------------
 
 
-def test_log_in_with_enter_LOGIN1():
+def test_log_in_with_enter_LOGIN1a():
     (LoginPage()
         .open()
         .fill_email(EMAIL)
@@ -24,7 +24,7 @@ def test_log_in_with_enter_LOGIN1():
         .sidebar.should_show_username(USERNAME))
 
 
-def test_log_in_with_button_LOGIN2():
+def test_log_in_with_button_LOGIN2b():
     (LoginPage()
         .open()
         .fill_email(EMAIL)
@@ -50,14 +50,14 @@ def test_log_in_with_button_LOGIN2():
         pytest.param(INVALID_EMAIL_DOUBLE_DOT, marks=pytest.mark.xfail(reason="нужна реализация")),
     ],
 )
-def test_invalid_email_shows_error_LOGIN3(invalid_email):
+def test_invalid_email_shows_error_LOGIN3c(invalid_email):
     page = LoginPage().open()
     page.fill_email(invalid_email)
     browser.element(LoginPage.EMAIL_ERROR).should(be.visible).should(have.text(ERROR_EMAIL_INVALID))
     browser.element(LoginPage.SUBMIT_BUTTON).should(be.disabled)
 
 
-def test_hide_validation_error_for_email_LOGIN4():
+def test_hide_validation_error_for_email_LOGIN4d():
     page = LoginPage().open()
     page.fill_email(INVALID_EMAIL_ONLY_LETTERS)
     browser.element(LoginPage.EMAIL_ERROR).should(be.visible)
@@ -70,14 +70,14 @@ def test_hide_validation_error_for_email_LOGIN4():
 # -----------------------
 
 
-def test_invalid_password_shows_error_LOGIN5():
+def test_invalid_password_shows_error_LOGIN5e():
     page = LoginPage().open()
     page.fill_password(INVALID_PASSWORD_SHORT)
     browser.element(LoginPage.PASSWORD_ERROR).should(be.visible).should(have.text(ERROR_PASSWORD_MIN))
     browser.element(LoginPage.SUBMIT_BUTTON).should(be.disabled)
 
 
-def test_hide_validation_error_for_password_LOGIN6():
+def test_hide_validation_error_for_password_LOGIN6f():
     page = LoginPage().open()
     page.fill_password(INVALID_PASSWORD_SHORT)
     browser.element(LoginPage.PASSWORD_ERROR).should(be.visible)
@@ -90,18 +90,18 @@ def test_hide_validation_error_for_password_LOGIN6():
 # -----------------------
 
 
-def test_submit_disabled_when_page_open_LOGIN7():
+def test_submit_disabled_when_page_open_LOGIN7g():
     page = LoginPage().open()
     browser.element(LoginPage.SUBMIT_BUTTON).should(be.disabled)
 
 
-def test_submit_disabled_with_empty_email_LOGIN8():
+def test_submit_disabled_with_empty_email_LOGIN8h():
     page = LoginPage().open()
     page.fill_password(PASSWORD)
     browser.element(LoginPage.SUBMIT_BUTTON).should(be.disabled)
 
 
-def test_submit_disabled_with_empty_password_LOGIN9():
+def test_submit_disabled_with_empty_password_LOGIN9i():
     page = LoginPage().open()
     page.fill_email(EMAIL)
     browser.element(LoginPage.SUBMIT_BUTTON).should(be.disabled)
@@ -112,13 +112,13 @@ def test_submit_disabled_with_empty_password_LOGIN9():
 # -----------------------
 
 
-def test_error_for_unexisting_email_LOGIN10():
+def test_error_for_unexisting_email_LOGIN10j():
     page = LoginPage().open()
     page.fill_email(UNEXISTING_EMAIL).fill_password(VALID_PASSWORD).submit_with_enter()
     browser.element('#error-message #top-reset-password-link').should(be.visible)
 
 
-def test_error_for_unmatching_password_LOGIN11():
+def test_error_for_unmatching_password_LOGIN11k():
     page = LoginPage().open()
     page.fill_email(EMAIL).fill_password(UNMATCHING_PASSWORD).submit_with_enter()
     browser.element('#error-message #top-reset-password-link').should(be.visible)
@@ -129,13 +129,13 @@ def test_error_for_unmatching_password_LOGIN11():
 # -----------------------
 
 
-def test_password_hidden_when_page_open_LOGIN12():
+def test_password_hidden_when_page_open_LOGIN12l():
     page = LoginPage().open()
     page.click_password_field()
     browser.element('button[aria-label="Show password"] svg').should(be.visible)
 
 
-def test_hide_show_password_LOGIN13():
+def test_hide_show_password_LOGIN13m():
     page = LoginPage().open()
     page.click_password_field()
     page.click_show_password()
@@ -149,7 +149,7 @@ def test_hide_show_password_LOGIN13():
 # -----------------------
 
 
-def test_open_reset_password_page_LOGIN14():
+def test_open_reset_password_page_LOGIN14n():
     page = LoginPage().open()
     page.click_reset_password()
     WebDriverWait(browser.driver, 4).until(
@@ -157,7 +157,7 @@ def test_open_reset_password_page_LOGIN14():
     )
 
 
-def test_open_sign_up_page_LOGIN15():
+def test_open_sign_up_page_LOGIN15o():
     page = LoginPage().open()
     page.click_sign_up()
     WebDriverWait(browser.driver, 4).until(
@@ -169,12 +169,12 @@ def test_open_sign_up_page_LOGIN15():
 # -----------------------
 
 
-def test_show_checked_remember_me_LOGIN16():
+def test_show_checked_remember_me_LOGIN16p():
     LoginPage().open()
     browser.element(LoginPage.REMEMBER_ME).should(have.attribute("data-checked", "true"))
 
 
-def test_uncheck_remember_me_LOGIN17():
+def test_uncheck_remember_me_LOGIN17q():
     page = LoginPage().open()
     page.toggle_remember_me()
     browser.element(LoginPage.REMEMBER_ME).should(have.attribute("data-checked", "false"))

@@ -4,10 +4,12 @@ import schedule
 import time
 
 # === НАСТРОЙКИ ===
-# Каждая строка: (ВРЕМЯ_В_ФОРМАТЕ_HH:MM, "имя_скрипта.sh")
 TASKS = [
     ("04:30", "run_login_test.sh"),
-    ("04:35", "run_signup_test.sh")
+    ("04:40", "run_signup_test.sh"),
+    ("04:50", "run_regdet_test.sh"),
+    ("05:00", "run_signup_visual_test.sh"),
+    ("05:01", "run_login_visual_test.sh")
 ]
 
 # === ЛОГИКА ===

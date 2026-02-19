@@ -33,3 +33,4 @@ mv "$REPORT_FOLDER/${REPORT_FILE}.tmp" "$REPORT_FOLDER/$REPORT_FILE"
 
 echo
 echo "Отчет сформирован: $REPORT_FOLDER/$REPORT_FILE"
+echo "Доступно по: https://uc4.ru/frontend-autotests-reports/login/${DATE_STR}/${REPORT_FILE}"

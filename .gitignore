@@ -4,3 +4,5 @@ __pycache__/
 screenshots/
 reports/
 data/
+emails_without_profiles.txt
+emails_without_user_anketa.txt
