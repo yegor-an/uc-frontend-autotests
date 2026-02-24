@@ -28,7 +28,7 @@ REPORT_FILE="$COUNT.html"
 mkdir -p "$REPORT_FOLDER"
 
 # запускаем pytest с формированием html-отчета
-pytest "$TEST_FOLDER" --html="$REPORT_FOLDER/${REPORT_FILE}.tmp" --self-contained-html -v
+/home/yegor/.local/bin/pytest "$TEST_FOLDER" --html="$REPORT_FOLDER/${REPORT_FILE}.tmp" --self-contained-html -v
 mv "$REPORT_FOLDER/${REPORT_FILE}.tmp" "$REPORT_FOLDER/$REPORT_FILE"
 
 echo

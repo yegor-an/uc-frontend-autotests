@@ -1,4 +1,5 @@
 import pytest
+import os
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selene import browser, be, have
@@ -25,8 +26,9 @@ def test_sign_up_with_enter_SIGNUP1a():
     WebDriverWait(browser.driver, 4).until(
         EC.url_to_be(f'{BASE_URL}/register-details')
     )
-    
-    save_email("../emails_without_user_anketa.txt", email)
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(current_dir, "emails_without_user_anketa.txt")
+    save_email(file_path, email)
 
 def test_sign_up_with_button_SIGNUP2b():
     email = generate_email()
@@ -36,7 +38,9 @@ def test_sign_up_with_button_SIGNUP2b():
         .fill_password(PASSWORD)
         .submit_with_button())
 
-    save_email("../emails_without_user_anketa.txt", email)
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(current_dir, "emails_without_user_anketa.txt")
+    save_email(file_path, email)
     
 # -----------------------
 # Email validation

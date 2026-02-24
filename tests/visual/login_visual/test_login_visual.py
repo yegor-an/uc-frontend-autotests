@@ -1,5 +1,5 @@
 from selene import browser
-from .visual_utils import assert_screenshot
+from visual.visual_utils import assert_screenshot
 from config import BASE_URL
 
 def test_login_page_visual():

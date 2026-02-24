@@ -1,5 +1,6 @@
 import pytest
 import time
+import os
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selene import browser, be, have, command
@@ -15,7 +16,9 @@ logging.basicConfig(level=logging.INFO)
 
 @pytest.fixture
 def login_and_regdet():
-    email = get_last_email("../emails_without_user_anketa.txt")
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(current_dir, "emails_without_user_anketa.txt")
+    email = get_last_email(file_path)
     (LoginPage()
         .open()
         .fill_email(email)
@@ -56,10 +59,15 @@ def test_success_regdet_REGDET2b(login_and_regdet):
     WebDriverWait(browser.driver, 4).until(
         EC.url_to_be(f'{BASE_URL}/new-startup')
     )
-    
-    email = get_last_email("../emails_without_user_anketa.txt")
-    remove_email("../emails_without_user_anketa.txt", email)
-    save_email("../emails_without_profiles.txt", email)
+
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    file_path_1 = os.path.join(current_dir, "emails_without_user_anketa.txt")
+    file_path_2 = os.path.join(current_dir, "emails_without_profiles.txt.txt")
+    save_email(file_path_1, email)
+
+    email = get_last_email(file_path_1)
+    remove_email(file_path_1, email)
+    save_email(file_path_2, email)
     
 
 @pytest.mark.xfail(reason="Submit активируется при любых непустых данных")

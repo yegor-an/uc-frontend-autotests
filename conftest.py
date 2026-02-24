@@ -11,7 +11,7 @@ def setup_browser():
     tmp_profile = tempfile.mkdtemp(prefix="chrome-profile-")
 
     opts = Options()
-    #opts.add_argument("--headless=new")        # запуск без окна
+    opts.add_argument("--headless=new")        # запуск без окна
     opts.add_argument("--disable-gpu")         # убирает ошибки SharedImageManager на Windows
     opts.add_argument("--log-level=3")         # только ошибки, без инфо/ворнингов
     opts.add_argument("--disable-logging")     # глушит лишние логи движка
